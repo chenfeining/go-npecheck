@@ -1,4 +1,4 @@
-package npecheck
+package main
 
 import (
 	check "github.com/chenfeining/go-npecheck"
