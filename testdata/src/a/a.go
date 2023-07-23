@@ -224,7 +224,7 @@ func np8Example(d *DataInfo) {
 	_ = d.GetChildNodePtr().PrintScore() // want "potential nil pointer reference" "potential nil pointer reference"
 
 	// d is a potential nil pointer reference
-	// d.GetChildNodePtr() is also a potential nil pointer reference
+	// d.GetChildNodePtr() is also a potential nil pointer
 
 	// It can be written as follows, and will be more safe.
 	// if d != nil && d.GetChildNodePtr() != nil {
@@ -249,7 +249,7 @@ func np9Example() {
 	_ = d.GetChildNodePtr().PrintScore() // want "potential nil pointer reference" "potential nil pointer reference"
 
 	// d is a potential nil pointer reference
-	// d.GetChildNodePtr() is also a potential nil pointer reference
+	// d.GetChildNodePtr() is also a potential nil pointer
 
 	// It can be written as follows, and will be more safe.
 	// if d != nil && d.GetChildNodePtr() != nil {
