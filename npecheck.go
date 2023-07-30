@@ -454,8 +454,12 @@ func (f *FuncDelChecker) recordRangeStmtNilValidation(s *ast.RangeStmt, typeInfo
 			}
 		}
 
-		sign := GetFuncSignature(expr, typeInfo)
-		if sign.Results().Len() != 1 {
+		var sign = GetFuncSignature(expr, typeInfo)
+		if sign == nil {
+			return
+		}
+
+		if sign.Results() != nil && sign.Results().Len() != 1 {
 			return
 		}
 
@@ -1133,6 +1137,14 @@ func (f *FuncDelChecker) hasSequenceDetectNode(
 	return result
 }
 
+func IsFuncPtrRespNeedSkip(name string) bool {
+	if strings.HasPrefix(name, "new") || strings.HasPrefix(name, "New") {
+		return true
+	}
+
+	return false
+}
+
 func GetFuncSignature(ex *ast.CallExpr, typeInfo *types.Info) *types.Signature {
 	if ex == nil {
 		return nil
@@ -1147,6 +1159,10 @@ func GetFuncSignature(ex *ast.CallExpr, typeInfo *types.Info) *types.Signature {
 	switch fn := fn.(type) {
 	case *ast.Ident:
 		obj := typeInfo.ObjectOf(fn)
+		if fn != nil && IsFuncPtrRespNeedSkip(fn.Name) {
+			return nil
+		}
+
 		sig, ok = obj.Type().(*types.Signature)
 		if !ok {
 			return nil
@@ -1154,6 +1170,10 @@ func GetFuncSignature(ex *ast.CallExpr, typeInfo *types.Info) *types.Signature {
 
 	case *ast.SelectorExpr:
 		obj := typeInfo.ObjectOf(fn.Sel)
+		if fn.Sel != nil && IsFuncPtrRespNeedSkip(fn.Sel.Name) {
+			return nil
+		}
+
 		sig, ok = obj.Type().(*types.Signature)
 		if !ok {
 			return nil
