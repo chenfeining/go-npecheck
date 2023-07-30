@@ -5,7 +5,6 @@ import (
 	"go/ast"
 	"go/token"
 	"go/types"
-
 	"sort"
 	"strings"
 
@@ -852,6 +851,11 @@ func Run(pass *analysis.Pass) (interface{}, error) {
 	)
 
 	for _, file := range pass.Files {
+		var fileName = fset.PositionFor(file.Pos(), false).Filename
+		if strings.HasSuffix(fileName, "_test.go") {
+			continue
+		}
+
 		for _, decl := range file.Decls {
 			switch decl := decl.(type) {
 			case *ast.FuncDecl:
